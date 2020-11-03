@@ -10,5 +10,8 @@
     "backend-test-open"
   ],
   "author": "paul",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
