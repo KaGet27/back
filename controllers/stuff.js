@@ -1,4 +1,5 @@
 const Thing = require('../models/Thing');
+const fs = require('fs');
 
 exports.createThing = (req, res, next) => {
     const thingObject = JSON.parse(req.body.thing);
@@ -19,9 +20,21 @@ exports.getOneThings = (req, res, next) =>{
 };
 
 exports.deleteThing =  (req, res, next)=>{
-    Thing.deleteOne({_id: req.params.id})
-        .then(() => res.status(200).json({message:'Objet Supprimer !'}))
-        .catch(error => res.status(404).json({error}))
+    //Avant suppresion de l'objet on doit également supprimer l'image correspondantes, on va récuperer son id et son nom
+    Thing.findOne({ _id: req.params.id })
+        .then(thing => {
+            //On extrait le nom du ficher
+        const filename = thing.imageUrl.split('/images/')[1];
+        //Avec le package fs on supprime le lien
+        fs.unlink(`images/${filename}`, () => {
+
+            Thing.deleteOne({_id: req.params.id})
+                .then(() => res.status(200).json({message:'Objet Supprimer !'}))
+                .catch(error => res.status(404).json({error}))
+            });
+        })
+        .catch(error => res.status(500).json({error}));
+
 };
 
 exports.modifyThing = (req, res, next) => {
