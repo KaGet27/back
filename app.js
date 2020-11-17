@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const path = require('path');
 
 const stuffRoutes = require('./routes/stuff');
 const userRoutes = require('./routes/user');
@@ -24,6 +25,10 @@ app.use((req, res, next) => {
 // Middleware qui recoit une requetes et qui le gere avec une réponse
 
 app.use(bodyParser.json());
+
+//Pour tout les requêtes utilisant des images de facon static on définit le dossier
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
 app.use('/api/stuff', stuffRoutes);
 app.use('/api/auth', userRoutes);
 module.exports = app;
